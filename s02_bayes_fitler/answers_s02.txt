@@ -1,0 +1,44 @@
+1. Prior
+No knowledge about the state, so:
+p(xt = colored) = p(xt = blank) = 0.5
+
+2. Prediction step
+p(xt+1 = colored | xt = blank, ut+1 = paint) = 0.9
+So, p(xt+1 = blank | xt = blank, ut+1 = paint) = 0.1
+
+Compute belief after action:
+
+p(xt+1 = colored) = p(xt+1 = colored | xt = blank, ut+1 = paint)*p(xt = blank) +
+                    p(xt+1 = colored | xt = colored, ut+1 = paint)*p(xt = colored)
+p(xt+1 = colored) = 0.9*0.5 + 1*0.5
+p(xt+1 = colored) = 0.95
+
+p(xt+1 = blank) = p(xt+1 = blank | xt = blank, ut+1 = paint) * p(xt = blank) +
+                  p(xt+1 = blank | xt = colored, ut+1 = paint) * p(xt = colored)
+p(xt+1 = blank) =  0.1*0.5 + 0*0.5
+p(xt+1 = blank) = 0.05
+
+Indeed, p(xt+1 = blank) + p(xt+1 = colored) = 1. 
+
+3. Correction step
+
+p(z = colored | x = blank) = 0.2
+p(z = colored | x = colored) = 0.7
+
+We want to know p(xt+1 = blank | zt+1 = colored).
+
+From the Bayes rule:
+
+p(xt+1 = blank | zt+1 = colored) = p(zt+1 = colored | xt+1 = blank) * p(xt+1 = blank) / p(zt+1 = colored)
+
+From the total probability rule:
+p(zt+1 = colored) = p(zt+1 = colored | xt+1 = blank) * p(xt+1 = blank) +
+                    p(zt+1 = colored | xt+1 = colored) * p(xt+1 = colored)
+                  = 0.2 * 0.05 + 0.7 * 0.95
+p(zt+1 = colored) = 0.675
+
+Finally:
+p(xt+1 = blank | zt+1 = colored) = 0.2 * 0.05 / 0.675
+p(xt+1 = blank | zt+1 = colored) = 0.0148.
+
+The probability the robot still blank after the painting action is 1.48%.

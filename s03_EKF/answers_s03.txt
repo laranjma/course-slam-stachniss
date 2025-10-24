@@ -1,0 +1,45 @@
+Exercise 1:
+a)
+The Bayes filter is a recursive algorithm used to estimate the probability
+distribution over the possible states of a system. It consists of two main steps:
+
+Prediction:
+This step uses the previous belief about the state and the control input to
+estimate the new state.
+It accounts for the uncertainty in how actions affect the system.
+Here we use the transition model.
+
+Correction (Update):
+This step incorporates new sensor measurements to refine the predicted belief.
+It adjusts the state estimate based on how likely the observed measurement is,
+given each possible state.
+Here we use the sensor model.
+
+b)
+* p(xt | ut, xt-1) is the predicted belief based on the control input (ut) and
+the prior state belief (xt-1).
+* p(zt | xt) is the the probability of getting a measurement zt based on state xt.
+This density of probability is used in the correction step where the posteriori
+belief xt+1 is calculated.
+* bel(xt) is the prior belif, the density of probability of state xt prior to the
+prediction and correction states.
+
+c)
+bel(x_t) = N(x_t; μ_t, Σ_t)
+This represents the belief over the robot's state at time t.
+- μ_t is the mean (estimated state).
+- Σ_t is the covariance matrix (uncertainty in the estimate).
+
+p(z_t | x_t) = N(z_t; C_t * x_t, Q_t)
+This models the probability of receiving measurement z_t given the current state x_t.
+- C_t is the observation matrix that maps the state to the measurement space.
+- Q_t is the measurement noise covariance matrix.
+
+p(x_t | u_t, x_{t-1}) = N(x_t; A_t * x_{t-1} + B_t * u_t, R_t)
+This models the probability of transitioning to state x_t given the previous state x_{t-1} and control input u_t.
+- A_t is the state transition matrix.
+- B_t is the control input matrix.
+
+d)
+μ_t and Σ_t are, respectively, the mean and the covariance matrix that
+represent the state x at a givent time t (i.e. x_t).

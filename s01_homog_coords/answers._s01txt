@@ -1,0 +1,12 @@
+Exercise 2: written in function motion_command.m.
+
+Exercise 3:
+(a) Functions written in files v2t.m and t2v.m (in tools folder).
+(b) Given w_p_1 and w_p_2 in the world frame, we want to get the relative
+    transform from p1 to p2: 2_M_1 for homogeneous coordinates.
+    First we compute the transform w_M_1 = v2t(w_p_1);
+    Then we compute the transform w_M_2 = v2t(w_p_2);
+    Finally we have the transform 2_M_1 = inv(w_M_2) * w_M_1, where inv(X) is
+    a function calculate the inverse matrix of X.
+(c) A function calculating the landmark location is available in landmark_loc.m
+    file.
