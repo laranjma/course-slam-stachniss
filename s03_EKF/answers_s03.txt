@@ -41,5 +41,48 @@ This models the probability of transitioning to state x_t given the previous sta
 - B_t is the control input matrix.
 
 d)
-μ_t and Σ_t are, respectively, the mean and the covariance matrix that
-represent the state x at a givent time t (i.e. x_t).
+'μ_t' and 'Σ_t' are, respectively, the mean and the covariance matrix that
+represent the state 'x' at a givent time 't' (i.e. 'x_t').
+The mean has dimensions (n + m) x 1 where 'n' is the number of state variables
+and 'm' is the number of landmarks.
+The covariance matrix has dimensions (n + m) x (n + m).
+'g' is the nonlinear action model used in the prediction step.
+'Gxt' is the Jacobian matrix representing the derivative of 'Gt' wrt the motion
+variables (landmarks excluded).It has dimensions n x n.
+'Gt' is the linearized model of the function 'g'. It is a Jacobian matrix which
+linearires 'g' around an operation point. Its dimension is (n + m) x (n + m).
+'Rxt' is the Jacobian matrix representing the derivative of 'Rt' wrt the state 'x'.
+Its dimension is n x n.
+'Rt' is the covariance matrix of the motion noise.
+Its dimension is (n + m) x (n + m). It represents the uncertainty of the motion
+model.
+'h' is the nonlinear function of the observation (sensor) model.
+'Ht' is the matrix corresponding to the linearization of 'h'. It is a Jacobian
+matrix of dimensions (n + m) x z, where 'z' is the dimension of the measurement
+vector.
+'Qt' is the covariance matrix of the sensor model noise with dimension z x z.
+It represents the uncertainty of the observation model.
+'Kt' is the Kalman gain, it is used to determine how much the filter should
+trust the measurements versus the prediction when updating the state estimate.
+Its dimension is (n + m) x z.
+
+Exercise 2:
+a)
+Gx =
+[
+  [1, 0, -delta_trans * sin(theta_{t-1} + delta_rot1)],
+  [0, 1,  delta_trans * cos(theta_{t-1} + delta_rot1)],
+  [0, 0, 1]
+]
+
+b)
+H_t^i =
+[
+  -Δx / sqrt(q)      , -Δy / sqrt(q)      , 0
+   Δy / q            , -Δx / q            , -1
+]
+
+Where:
+  Δx = μ_j,x - μ_t,x
+  Δy = μ_j,y - μ_t,y
+  q = Δx² + Δy²
