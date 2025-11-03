@@ -41,7 +41,7 @@ showGui = true;  % show a window while the algorithm runs
 % Perform filter update for each odometry-observation pair read from the
 % data file.
 %for t = 1:size(data.timestep, 2)
-for t = 1:50
+for t = 1:5
     disp('Time step t ='), disp(t)
 
     % Perform the prediction step of the UKF

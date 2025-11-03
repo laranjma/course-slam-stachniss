@@ -7,6 +7,8 @@ function [mu, sigma, sigma_points] = prediction_step(mu, sigma, u)
 % u: odometry reading (r1, t, r2)
 % Use u.r1, u.t, and u.r2 to access the rotation and translation values
 
+disp('.........prediction step.........')
+
 % For computing lambda.
 global scale;
 
@@ -15,21 +17,24 @@ sigma_points = compute_sigma_points(mu, sigma);
 
 % Dimensionality
 n = length(mu);
+m = size(sigma_points,2) % 2*n+1;
 % lambda
 lambda = scale - n;
 
 % TODO: Transform all sigma points according to the odometry command
 % Remember to vectorize your operations and normalize angles
 % Tip: the function normalize_angle also works on a vector (row) of angles
-
+new_thetas = normalize_angle(sigma_points(3,:) + u.r1);
+deltas = [u.t * cos(new_thetas);
+          u.t * sin(new_thetas);
+          (u.r1 + u.r2) * ones(1,m)]
+sigma_points(1:3,:) = sigma_points(1:3,:) + deltas;
+sigma_points(3,:) = normalize_angle(sigma_points(3,:));
 
 % Computing the weights for recovering the mean
 wm = [lambda/scale, repmat(1/(2*scale),1,2*n)];
 wc = wm;
 
-% TODO: recover mu.
-% Be careful when computing the robot's orientation (sum up the sines and
-% cosines and recover the 'average' angle via atan2)
 
 
 % TODO: Recover sigma. Again, normalize the angular difference
