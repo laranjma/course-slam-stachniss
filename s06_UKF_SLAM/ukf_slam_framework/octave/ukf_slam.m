@@ -35,13 +35,12 @@ global scale;
 scale = 3.0;
 
 % toogle the visualization type
-showGui = true;  % show a window while the algorithm runs
-%showGui = false; % plot to files instead
+%showGui = true;  % show a window while the algorithm runs
+showGui = false; % plot to files instead
 
 % Perform filter update for each odometry-observation pair read from the
 % data file.
-%for t = 1:size(data.timestep, 2)
-for t = 1:5
+for t = 1:size(data.timestep, 2)
     disp('Time step t ='), disp(t)
 
     % Perform the prediction step of the UKF

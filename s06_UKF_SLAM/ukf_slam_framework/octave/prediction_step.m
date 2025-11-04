@@ -7,8 +7,6 @@ function [mu, sigma, sigma_points] = prediction_step(mu, sigma, u)
 % u: odometry reading (r1, t, r2)
 % Use u.r1, u.t, and u.r2 to access the rotation and translation values
 
-disp('.........prediction step.........')
-
 % For computing lambda.
 global scale;
 
@@ -17,17 +15,17 @@ sigma_points = compute_sigma_points(mu, sigma);
 
 % Dimensionality
 n = length(mu);
-m = size(sigma_points,2) % 2*n+1;
+m = size(sigma_points,2); % 2*n+1;
 % lambda
 lambda = scale - n;
 
 % TODO: Transform all sigma points according to the odometry command
 % Remember to vectorize your operations and normalize angles
 % Tip: the function normalize_angle also works on a vector (row) of angles
-new_thetas = normalize_angle(sigma_points(3,:) + u.r1);
+new_thetas = sigma_points(3,:) + u.r1;
 deltas = [u.t * cos(new_thetas);
           u.t * sin(new_thetas);
-          (u.r1 + u.r2) * ones(1,m)]
+          (u.r1 + u.r2) * ones(1,m)];
 sigma_points(1:3,:) = sigma_points(1:3,:) + deltas;
 sigma_points(3,:) = normalize_angle(sigma_points(3,:));
 
@@ -35,10 +33,19 @@ sigma_points(3,:) = normalize_angle(sigma_points(3,:));
 wm = [lambda/scale, repmat(1/(2*scale),1,2*n)];
 wc = wm;
 
-
+% TODO: recover mu.
+% Be careful when computing the robot's orientation (sum up the sines and
+% cosines and recover the 'average' angle via atan2)
+mu = sigma_points * wm';
+x_sum = sum(wm .* cos(sigma_points(3,:)));
+y_sum = sum(wm .* sin(sigma_points(3,:)));
+mu(3) = normalize_angle(atan2(y_sum, x_sum));
 
 % TODO: Recover sigma. Again, normalize the angular difference
-
+mu_sshape = repmat(mu, 1, m);
+delta = sigma_points - mu_sshape; % n*m
+delta(3,:) = normalize_angle(delta(3,:));
+sigma = delta * diag(wc) *  delta'; % n*m x m*m x m*n = n*n
 
 % Motion noise
 motionNoise = 0.1;
@@ -49,6 +56,6 @@ R = zeros(size(sigma,1));
 R(1:3,1:3) = R3;
 
 % TODO: Add motion noise to sigma
-
+sigma = sigma + R;
 
 end
