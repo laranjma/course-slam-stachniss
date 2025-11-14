@@ -12,12 +12,24 @@ function X = ls_calibrate_odometry(Z)
   X = eye(3); 
 
   % TODO: initialize H and b of the linear system
+  m = size(Z,1);
+  H = zeros(9,9); % since X is 3x3
+  b = zeros(9,1);
   
   % TODO: loop through the measurements and update H and b
   % You may call the functions error_function and jacobian, see below
   % We assume that the information matrix is the identity.
-
+  Omega = eye(3);
+  for i=1:m
+    e = error_function(i, X, Z); % 3x1
+    J = jacobian(i, Z); % 3x9
+    b += (e'*Omega*J)'; % (1x3 3x3 3x9)' = 9x1
+    H += J'*Omega*J; % 9x3 3x3 3x9 = 9x9
+  endfor
+  
   % TODO: solve and update the solution
+  dx = - inv(H) * b
+  X = X + [dx(1:3)'; dx(4:6)'; dx(7:9)'];
 end
 
 % this function computes the error of the i^th measurement in Z
@@ -29,6 +41,7 @@ end
 % e:	the error of the ith measurement
 function e = error_function(i, X, Z)
   % TODO compute the error of each measurement
+  e = Z(i,1:3)' - X * Z(i,4:6)';
 end
 
 % derivative of the error function for the ith measurement in Z
@@ -37,4 +50,10 @@ end
 % J:	the jacobian of the ith measurement
 function J = jacobian(i, Z)
   % TODO compute the Jacobian
+  J = zeros(3, 9); % since 3 error functions (x,y,theta) and 9 params (x11...x33)
+  u_odom = Z(i,4:6);
+  J(1,1:3) = u_odom;
+  J(2,4:6) = u_odom;
+  J(3,7:9) = u_odom;
+  J = -J;
 end
