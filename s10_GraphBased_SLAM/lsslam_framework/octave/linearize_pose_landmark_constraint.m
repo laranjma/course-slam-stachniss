@@ -11,6 +11,18 @@
 function [e, A, B] = linearize_pose_landmark_constraint(x, l, z)
 
   % TODO compute the error and the Jacobians of the error
-
+  X = v2t(x);
+  R = X(1:2,1:2);
+  e = (R')*(l - x(1:2)) - z;
+  
+  xl = l(1);
+  yl = l(2);
+  xi = x(1);
+  yi = x(2);
+  thetai = x(3);
+  A = [-cos(thetai),-sin(thetai), -sin(thetai)*(xl-xi)+cos(thetai)*(yl-yi);
+       sin(thetai), -cos(thetai),-cos(thetai)*(xl-xi)-sin(thetai)*(yl-yi)];
+       
+  B = -A(:,1:2);
 
 end;

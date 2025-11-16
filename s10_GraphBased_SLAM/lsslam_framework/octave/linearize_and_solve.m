@@ -35,11 +35,19 @@ for eid = 1:length(g.edges)
 
 
     % TODO: compute and add the term to H and b
-
+    i = edge.fromIdx:edge.fromIdx+2; % wrt x1
+    j = edge.toIdx:edge.toIdx+2;     % wrt x2
+    b(i) += (e'*edge.information*A)';   % wrt x1
+    b(j) += (e'*edge.information*B)';   % wrt x2
+    H(i,i) += A'*edge.information*A;
+    H(i,j) += A'*edge.information*B;
+    H(j,i) += B'*edge.information*A;
+    H(j,j) += B'*edge.information*B;
 
     if (needToAddPrior)
       % TODO: add the prior for one pose of this edge
       % This fixes one node to remain at its current location
+      H(1:3, 1:3) = H(1:3, 1:3) + eye(3, 3);
       
       needToAddPrior = false;
     end
@@ -63,7 +71,14 @@ for eid = 1:length(g.edges)
 
 
     % TODO: compute and add the term to H and b
-
+    i = edge.fromIdx:edge.fromIdx+2;   % wrt x1
+    j = edge.toIdx:edge.toIdx+1;       % wrt l
+    b(i) += (e'*edge.information*A)';  % wrt x1
+    b(j) += (e'*edge.information*B)';  % wrt l
+    H(i,i) += A'*edge.information*A;
+    H(i,j) += A'*edge.information*B;
+    H(j,i) += B'*edge.information*A;
+    H(j,j) += B'*edge.information*B;
 
   end
 end
@@ -72,6 +87,6 @@ disp('solving system');
 
 % TODO: solve the linear system, whereas the solution should be stored in dx
 % Remember to use the backslash operator instead of inverting H
-
+dx = -H\b;
 
 end
